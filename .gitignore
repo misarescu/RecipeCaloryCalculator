@@ -19,5 +19,8 @@ vendor/
 
 bin
 
+# db from the open-food db
+*.jsonl
+
 # Go workspace file
 go.work
