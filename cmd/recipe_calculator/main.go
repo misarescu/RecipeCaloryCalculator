@@ -11,7 +11,7 @@ type MessageResponse struct {
 func main() {
 	api, _ := server.New("localhost", "8080")
 
-	api.AddRouteHandler("GET /recipe", GetRecipe, server.DefaultErrorHandler)
+	api.AddRouteHandler("GET /recipe-value", GetRecipeValue, server.DefaultErrorHandler)
 
 	api.Run()
 }
