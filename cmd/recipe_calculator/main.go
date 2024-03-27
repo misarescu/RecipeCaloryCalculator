@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -38,9 +37,7 @@ func main() {
 		err := json.NewEncoder(w).Encode(res)
 
 		return err
-	}, func(err error) {
-		log.Println(err.Error())
-	})
+	}, server.DefaultErrorHandler)
 
 	api.Run()
 }
