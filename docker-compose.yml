@@ -1,0 +1,13 @@
+services:
+  recipe-calculator:
+    image: recipe-calculator-dev
+    build:
+      dockerfile: Dockerfile_dev
+    container_name: recipe_calculator
+    volumes:
+      - .:/home/recipe_calculator
+  db:
+    image: mongo
+    container_name: db
+    volumes:
+      - ./db_data:/db_data
