@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -10,15 +11,6 @@ import (
 )
 
 var shutdown os.Signal = syscall.SIGUSR1
-
-type Server struct {
-	listenAddr string
-	listenPort string
-	router     *http.ServeMux
-}
-
-type ApiHandler func(http.ResponseWriter, *http.Request) error
-type ErrorHandler func(error)
 
 func New(addr, port string) (*Server, error) {
 	return &Server{listenAddr: addr, listenPort: port, router: http.NewServeMux()}, nil
@@ -67,4 +59,11 @@ func (s *Server) AddRouteHandler(apiRoute string, f ApiHandler, e ErrorHandler) 
 
 func DefaultErrorHandler(err error) {
 	log.Println(err.Error())
+}
+
+func WriteJSON(w http.ResponseWriter, code int, data any) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+
+	return json.NewEncoder(w).Encode(data)
 }
