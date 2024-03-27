@@ -63,7 +63,12 @@ func LogErrorAndSendResponse(w http.ResponseWriter, res any, code int, err error
 }
 
 func DefaultErrorHandler(w http.ResponseWriter, err error) {
-	LogErrorAndSendResponse(w, Response{Message: "Invalid Request"}, http.StatusBadRequest, err)
+	er := struct {
+		Message string `json:"message"`
+	}{
+		Message: "Invalid Request",
+	}
+	LogErrorAndSendResponse(w, er, http.StatusBadRequest, err)
 }
 
 func WriteJSON(w http.ResponseWriter, code int, data any) error {
