@@ -8,5 +8,9 @@ type Server struct {
 	router     *http.ServeMux
 }
 
+type Response struct {
+	Message string
+}
+
 type ApiHandler func(http.ResponseWriter, *http.Request) error
-type ErrorHandler func(error)
+type ErrorHandler func(w http.ResponseWriter, err error)

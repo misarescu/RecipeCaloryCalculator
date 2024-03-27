@@ -1,40 +1,30 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"recipe-calculator.com/internal/server"
 )
 
-type response struct {
-	Message string
-}
-
 func main() {
 	api, _ := server.New("localhost", "8080")
 
 	api.AddRouteHandler("GET /message", func(w http.ResponseWriter, r *http.Request) error {
-		w.Header().Set("Contenty-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		res := response{Message: "all is ok"}
-		err := json.NewEncoder(w).Encode(res)
+		res := server.Response{Message: "all is ok"}
+		err := server.WriteJSON(w, http.StatusOK, res)
 		return err
 	}, nil)
 
 	api.AddRouteHandler("GET /message/{id}", func(w http.ResponseWriter, r *http.Request) error {
-		w.Header().Set("Contenty-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
 		strId := r.PathValue("id")
 		if _, err := strconv.Atoi(strId); err != nil {
 			return err
 		}
 
-		res := response{Message: "id is string and ok"}
+		res := server.Response{Message: "id is string and ok"}
 
-		err := json.NewEncoder(w).Encode(res)
+		err := server.WriteJSON(w, http.StatusOK, res)
 
 		return err
 	}, server.DefaultErrorHandler)

@@ -47,7 +47,7 @@ func MakeApiHandler(f ApiHandler, e ErrorHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
 			if e != nil {
-				e(err) // handle the error here
+				e(w, err) // handle the error here
 			}
 		}
 	}
@@ -57,8 +57,13 @@ func (s *Server) AddRouteHandler(apiRoute string, f ApiHandler, e ErrorHandler) 
 	s.router.HandleFunc(apiRoute, MakeApiHandler(f, e))
 }
 
-func DefaultErrorHandler(err error) {
+func LogErrorAndSendResponse(w http.ResponseWriter, res any, code int, err error) {
+	WriteJSON(w, code, res)
 	log.Println(err.Error())
+}
+
+func DefaultErrorHandler(w http.ResponseWriter, err error) {
+	LogErrorAndSendResponse(w, Response{Message: "Invalid Request"}, http.StatusBadRequest, err)
 }
 
 func WriteJSON(w http.ResponseWriter, code int, data any) error {
