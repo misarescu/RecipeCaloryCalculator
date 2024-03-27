@@ -34,12 +34,8 @@ func New(addr, port string) (*Server, error) {
 	return &Server{listenAddr: addr, listenPort: port, router: http.NewServeMux()}, nil
 }
 
-func (s *Server) AddRouteHandlerFancy(apiRoute string, f ApiHandler, e ErrorHandler) {
+func (s *Server) AddRouteHandler(apiRoute string, f ApiHandler, e ErrorHandler) {
 	s.router.HandleFunc(apiRoute, MakeApiHandler(f, e))
-}
-
-func (s *Server) AddRouteHandler(apiRoute string, f http.HandlerFunc) {
-	s.router.HandleFunc(apiRoute, f)
 }
 
 func (s *Server) Run() {
