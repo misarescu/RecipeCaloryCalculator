@@ -20,22 +20,8 @@ type Server struct {
 type ApiHandler func(http.ResponseWriter, *http.Request) error
 type ErrorHandler func(error)
 
-func MakeApiHandler(f ApiHandler, e ErrorHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := f(w, r); err != nil {
-			if e != nil {
-				e(err) // handle the error here
-			}
-		}
-	}
-}
-
 func New(addr, port string) (*Server, error) {
 	return &Server{listenAddr: addr, listenPort: port, router: http.NewServeMux()}, nil
-}
-
-func (s *Server) AddRouteHandler(apiRoute string, f ApiHandler, e ErrorHandler) {
-	s.router.HandleFunc(apiRoute, MakeApiHandler(f, e))
 }
 
 func (s *Server) Run() {
@@ -63,4 +49,22 @@ func (s *Server) Run() {
 	if signal == shutdown {
 		os.Exit(1)
 	}
+}
+
+func MakeApiHandler(f ApiHandler, e ErrorHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := f(w, r); err != nil {
+			if e != nil {
+				e(err) // handle the error here
+			}
+		}
+	}
+}
+
+func (s *Server) AddRouteHandler(apiRoute string, f ApiHandler, e ErrorHandler) {
+	s.router.HandleFunc(apiRoute, MakeApiHandler(f, e))
+}
+
+func DefaultErrorHandler(err error) {
+	log.Println(err.Error())
 }
